@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>League in a Box - Site Architecture and UX Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pitch:#14342b;
+    --pitch-deep:#0d241f;
+    --chalk:#f7f5f0;
+    --chalk-dim:#e9e5db;
+    --ink:#1d1d1b;
+    --ink-soft:#63625f;
+    --clay:#d4622a;
+    --clay-deep:#a84a1e;
+    --mint:#6df2cc;
+    --line:rgba(20,52,43,0.15);
+    --ok:#2f7a53;
+    --warn:#b2781a;
+    --danger:#9c3c21;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--chalk);font-family:"Inter",sans-serif;color:var(--ink);}
+  body{
+    background:
+      radial-gradient(circle at 8% -12%, rgba(109,242,204,0.16), transparent 40%),
+      radial-gradient(circle at 92% -10%, rgba(212,98,42,0.18), transparent 36%),
+      var(--chalk);
+  }
+  .wrap{max-width:1240px;margin:0 auto;padding:0 24px 90px;}
+
+  .announcement{
+    margin:0 -24px;
+    background:var(--pitch);
+    color:#cbe1d7;
+    border-bottom:1px solid rgba(255,255,255,0.13);
+    padding:8px 24px;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:0.02em;
+    text-align:center;
+  }
+  .masthead{
+    margin:0 -24px;
+    padding:16px 24px;
+    background:rgba(247,245,240,0.9);
+    border-bottom:1px solid var(--line);
+    position:sticky;
+    top:0;
+    z-index:12;
+    backdrop-filter:blur(7px);
+  }
+  .masthead-row{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:16px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family:"Oswald",sans-serif;
+    color:var(--pitch);
+    font-size:21px;
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .mark{
+    width:30px;height:30px;border-radius:8px;background:var(--pitch);
+    display:inline-flex;align-items:center;justify-content:center;color:var(--chalk);font-weight:700;
+  }
+  .main-nav{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+    flex-wrap:wrap;
+  }
+  .main-nav a{
+    text-decoration:none;
+    color:var(--ink-soft);
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:0.02em;
+  }
+  .main-nav a:hover{color:var(--pitch);}
+  .header-actions{
+    display:flex;gap:8px;align-items:center;
+  }
+  .btn{
+    border-radius:10px;border:none;cursor:pointer;font-size:12px;font-weight:700;padding:10px 12px;
+  }
+  .btn.subtle{background:#fff;border:1px solid var(--line);color:var(--ink-soft);}
+  .btn.primary{background:var(--clay);color:#fff;}
+
+  section{
+    border:1px solid var(--line);
+    border-radius:18px;
+    background:#fff;
+    padding:22px;
+    margin-top:20px;
+    box-shadow:0 8px 24px rgba(12,27,20,0.07);
+  }
+  .section-head{
+    display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;
+    margin-bottom:14px;
+  }
+  .section-head h2{
+    margin:0;
+    font-family:"Archivo Black",sans-serif;
+    font-size:34px;
+    line-height:1.05;
+    letter-spacing:-0.01em;
+    color:var(--pitch);
+  }
+  .section-head p{
+    margin:7px 0 0;
+    color:var(--ink-soft);
+    font-size:13px;
+    max-width:810px;
+  }
+  .badge{
+    background:rgba(212,98,42,0.14);
+    color:var(--clay-deep);
+    border-radius:999px;
+    padding:6px 10px;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    white-space:nowrap;
+  }
+
+  .hero{
+    background:linear-gradient(145deg,var(--pitch),var(--pitch-deep));
+    color:var(--chalk);
+    border-radius:16px;
+    padding:28px 24px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;inset:0;
+    background-image:repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 36px);
+    pointer-events:none;
+  }
+  .hero-grid{
+    position:relative;z-index:1;
+    display:grid;grid-template-columns:1.25fr 0.75fr;gap:14px;
+  }
+  .hero h1{
+    margin:0 0 8px;
+    font-family:"Archivo Black",sans-serif;
+    font-size:46px;line-height:1.04;letter-spacing:-0.012em;
+    max-width:760px;
+  }
+  .hero p{
+    margin:0;
+    color:#c8dfd4;
+    font-size:15px;
+    max-width:760px;
+  }
+  .hero .cta-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px;}
+  .btn.dark{
+    background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.24);
+    color:#dceee7;
+  }
+  .stats{
+    border:1px solid rgba(255,255,255,0.26);
+    border-radius:12px;
+    background:rgba(255,255,255,0.08);
+    padding:12px;
+    display:grid;
+    gap:8px;
+  }
+  .stats .line{
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:13px;
+  }
+  .stats .line b{
+    font-family:"Oswald",sans-serif;
+    color:var(--mint);
+    font-size:20px;
+    letter-spacing:0.01em;
+  }
+  .chip-row{
+    margin-top:12px;
+    display:flex;gap:8px;flex-wrap:wrap;
+  }
+  .chip{
+    border:1px solid rgba(255,255,255,0.2);
+    color:#d8ece3;
+    border-radius:999px;
+    padding:6px 10px;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.03em;
+    background:rgba(255,255,255,0.1);
+  }
+
+  .grid{display:grid;gap:14px;}
+  .grid.two{grid-template-columns:1fr 1fr;}
+  .grid.three{grid-template-columns:repeat(3,1fr);}
+  .grid.four{grid-template-columns:repeat(4,1fr);}
+  .card{
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:#fff;
+    padding:15px;
+  }
+  .card h3{
+    margin:0 0 8px;
+    font-family:"Oswald",sans-serif;
+    font-size:18px;
+    color:var(--pitch);
+    letter-spacing:0.01em;
+  }
+  .card p{
+    margin:0 0 8px;
+    color:var(--ink-soft);
+    font-size:13px;
+    line-height:1.56;
+  }
+  .label{
+    margin-bottom:6px;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .list{margin:0;padding-left:18px;}
+  .list li{margin-bottom:6px;font-size:13px;color:var(--ink-soft);line-height:1.48;}
+
+  .tree-card{
+    border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--chalk);
+  }
+  .tree-card h3{
+    margin:0 0 8px;
+    font-family:"Oswald",sans-serif;
+    color:var(--pitch);
+    font-size:18px;
+  }
+  .tree{
+    margin:0;
+    padding-left:18px;
+  }
+  .tree li{
+    margin-bottom:6px;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+  .tree li b{color:var(--pitch);}
+
+  .table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+  }
+  .table th,.table td{
+    border-bottom:1px solid var(--chalk-dim);
+    padding:10px 8px;
+    text-align:left;
+    vertical-align:top;
+  }
+  .table th{
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .state{
+    display:inline-flex;
+    align-items:center;
+    border-radius:999px;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    padding:4px 8px;
+  }
+  .state.ok{background:rgba(47,122,83,0.12);color:var(--ok);}
+  .state.warn{background:rgba(178,120,26,0.16);color:var(--warn);}
+  .state.danger{background:rgba(156,60,33,0.13);color:var(--danger);}
+
+  .flow-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+  }
+  .flow{
+    border:1px dashed var(--line);
+    border-radius:12px;
+    padding:12px;
+    background:#fff;
+  }
+  .flow h4{
+    margin:0 0 6px;
+    color:var(--pitch);
+    font-size:14px;
+  }
+  .flow p{
+    margin:0;
+    color:var(--ink-soft);
+    font-size:12px;
+    line-height:1.5;
+  }
+
+  .requirement-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+  }
+  .requirement{
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:#fff;
+    padding:14px;
+  }
+  .requirement h3{
+    margin:0;
+    font-family:"Oswald",sans-serif;
+    font-size:19px;
+    color:var(--pitch);
+  }
+  .route{
+    margin-top:3px;
+    font-size:11px;
+    color:var(--ink-soft);
+    font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .subgrid{
+    margin-top:10px;
+    display:grid;
+    gap:9px;
+  }
+  .must{
+    border-left:3px solid var(--clay);
+    background:var(--chalk);
+    border-radius:8px;
+    padding:8px 10px;
+  }
+  .must b{
+    display:block;
+    color:var(--pitch);
+    font-size:12px;
+    margin-bottom:4px;
+  }
+  .must span{
+    font-size:12px;
+    color:var(--ink-soft);
+    line-height:1.48;
+  }
+
+  .footer-note{
+    margin-top:16px;
+    font-size:12px;
+    color:var(--ink-soft);
+    text-align:center;
+  }
+
+  @media (max-width:1090px){
+    .hero-grid{grid-template-columns:1fr;}
+    .grid.four{grid-template-columns:repeat(2,1fr);}
+    .grid.three{grid-template-columns:1fr;}
+    .requirement-grid{grid-template-columns:1fr;}
+    .flow-grid{grid-template-columns:1fr;}
+    .masthead-row{grid-template-columns:1fr;justify-items:start;}
+    .main-nav{justify-content:flex-start;}
+  }
+  @media (max-width:680px){
+    .section-head h2{font-size:27px;}
+    .hero h1{font-size:34px;}
+    .grid.four{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div class="announcement">GAA-first experience system - architecture concept for full product website and application.</div>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="masthead-row">
+      <div class="brand"><span class="mark">+</span> League in a Box</div>
+      <nav class="main-nav">
+        <a href="#">Product</a>
+        <a href="#">Solutions</a>
+        <a href="#">Pricing</a>
+        <a href="#">Case Studies</a>
+        <a href="#">FAQ</a>
+        <a href="#">Pilot Program</a>
+      </nav>
+      <div class="header-actions">
+        <button class="btn subtle">Log in</button>
+        <button class="btn primary">Start a league</button>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>Concept Direction: Touchline Command v2</h2>
+        <p>This is now a refined architecture concept, not tabbed reference frames. It defines the full site structure, prescriptive navigation model, and required behavior per page.</p>
+      </div>
+      <span class="badge">Refined Concept</span>
+    </div>
+    <div class="hero">
+      <div class="hero-grid">
+        <div>
+          <h1>One platform, two surfaces, one match spine.</h1>
+          <p>League in a Box drives weekly league operations. Club Intelligence turns that same match history into retention and development insight. The experience is built to feel fast under pressure and trustworthy with youth data.</p>
+          <div class="cta-row">
+            <button class="btn primary">Launch league setup</button>
+            <button class="btn dark">View club workflow</button>
+          </div>
+          <div class="chip-row">
+            <span class="chip">No-login result link</span>
+            <span class="chip">Goals-points native</span>
+            <span class="chip">Consent-gated ratings</span>
+            <span class="chip">Sponsor monetisation built in</span>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="line"><span>Median result submission</span><b>26 sec</b></div>
+          <div class="line"><span>Target league setup time</span><b>10 min</b></div>
+          <div class="line"><span>Dispute resolution target</span><b>&lt; 4 hrs</b></div>
+          <div class="line"><span>Player risk review cycle</span><b>Weekly</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>Full Site Structure</h2>
+        <p>Canonical information architecture across public website, app workspaces, and one-time captain entry links.</p>
+      </div>
+      <span class="badge">IA Blueprint</span>
+    </div>
+    <div class="grid two">
+      <div class="tree-card">
+        <h3>Public website map</h3>
+        <ul class="tree">
+          <li><b>/</b> - Landing (value proposition, proof, split CTA)</li>
+          <li><b>/product/league-in-a-box</b> - Organiser-focused product detail</li>
+          <li><b>/product/club-intelligence</b> - Club committee and coach value</li>
+          <li><b>/pricing</b> - Four-tier matrix + buyer split</li>
+          <li><b>/faq</b> - Trust, compliance, and rollout answers</li>
+          <li><b>/pilot-program</b> - Lead capture and qualification</li>
+          <li><b>/resources/case-studies</b> - Social proof and county outcomes</li>
+          <li><b>/login</b> - Auth entry to app shell</li>
+        </ul>
+      </div>
+      <div class="tree-card">
+        <h3>Authenticated application map</h3>
+        <ul class="tree">
+          <li><b>/app/organiser/home</b> - Command center for league operators</li>
+          <li><b>/app/organiser/league-control</b> - Fixtures, pitches, referees</li>
+          <li><b>/app/organiser/results</b> - Result inbox and dispute handling</li>
+          <li><b>/app/organiser/sponsors</b> - Campaign setup and performance</li>
+          <li><b>/app/organiser/reports</b> - County board and sponsor exports</li>
+          <li><b>/app/club/:clubId/coach-hub</b> - Squad-level intelligence</li>
+          <li><b>/app/club/:clubId/squad/:squadId</b> - Roster and availability</li>
+          <li><b>/app/club/:clubId/player/:playerId</b> - Player journey profile</li>
+          <li><b>/app/club/:clubId/compliance/consent</b> - Guardian consent vault</li>
+          <li><b>/league/:slug</b> - Public standings page (no auth)</li>
+          <li><b>/r/:token</b> - Captain result link (token scoped)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <div class="label">Cross-surface journeys</div>
+      <div class="flow-grid">
+        <div class="flow">
+          <h4>Journey A: Organiser acquisition</h4>
+          <p>Landing -> League product page -> Pricing -> Pilot Program -> /app/organiser/home.</p>
+        </div>
+        <div class="flow">
+          <h4>Journey B: Club upsell from league usage</h4>
+          <p>/league/:slug -> Club Intelligence page -> Sales call -> /app/club/:clubId/coach-hub.</p>
+        </div>
+        <div class="flow">
+          <h4>Journey C: Consent unlock path</h4>
+          <p>Player profile locked panel -> Consent vault request -> Guardian approval -> Ratings enabled.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>Navigation Model (No Pill Tabs)</h2>
+        <p>Replace tab-switching references with a product-grade navigation system: global marketing nav + role-aware app shell.</p>
+      </div>
+      <span class="badge">Navigation Requirements</span>
+    </div>
+    <div class="grid two">
+      <div class="card">
+        <div class="label">Marketing navigation</div>
+        <h3>Desktop: top rail with persistent CTA</h3>
+        <ul class="list">
+          <li>Primary nav: Product, Solutions, Pricing, Case Studies, FAQ, Pilot Program.</li>
+          <li>Right actions always visible: Log in + Start a league.</li>
+          <li>Product opens a two-column mega menu for "League in a Box" and "Club Intelligence".</li>
+          <li>Mobile collapses to menu drawer with sticky "Start a league" CTA.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="label">Application navigation</div>
+        <h3>Desktop: left rail + top command bar</h3>
+        <ul class="list">
+          <li>Left rail groups by workflow: Command, Fixtures, Results, Sponsors, Reports, Club Intelligence, Compliance.</li>
+          <li>Top command bar controls context: league selector, season selector, round/day, global search, quick actions.</li>
+          <li>User roles filter the left rail; users only see pages they can access.</li>
+          <li>Mobile uses bottom nav for top 4 destinations plus a "More" drawer.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <div class="label">Unique interaction pattern</div>
+      <h3>Touchline Command Palette (press "/")</h3>
+      <p>A command bar available across app pages to jump to any route, open a workflow, or trigger high-frequency actions (create fixture, resolve dispute, send reminders). This is the differentiator replacing tab-heavy navigation and supports volunteer time pressure.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>Marketing Pages - Prescriptive Requirements</h2>
+        <p>Each page has fixed purpose, modules, and conversion behavior. These are implementation requirements, not optional content ideas.</p>
+      </div>
+      <span class="badge">Public Site Specs</span>
+    </div>
+    <table class="table">
+      <tr>
+        <th>Page</th>
+        <th>Route</th>
+        <th>Required modules</th>
+        <th>Conversion target</th>
+      </tr>
+      <tr>
+        <td><b>Landing</b></td>
+        <td>/</td>
+        <td>Split value proposition, proof metrics, two-buyer explainer, social proof strip, primary CTA pair.</td>
+        <td>Pilot form starts and demo requests.</td>
+      </tr>
+      <tr>
+        <td><b>Pricing</b></td>
+        <td>/pricing</td>
+        <td>4 tiers, buyer labels, FAQ jump links, calculator module, trust/legal footnotes.</td>
+        <td>Plan selection and contact-sales starts.</td>
+      </tr>
+      <tr>
+        <td><b>FAQ</b></td>
+        <td>/faq</td>
+        <td>Affiliation, data protection, consent model, rollout scope, support model, sponsor model.</td>
+        <td>Reduce drop-off and support tickets.</td>
+      </tr>
+      <tr>
+        <td><b>Pilot Program</b></td>
+        <td>/pilot-program</td>
+        <td>Qualification form, county/league metadata, implementation timeline expectations.</td>
+        <td>Qualified pilot leads.</td>
+      </tr>
+    </table>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>App Pages - Specific Requirements</h2>
+        <p>Page-level requirements for app implementation. Every item below is mandatory for v1 behavior unless explicitly marked as phase 2.</p>
+      </div>
+      <span class="badge">Core App Specs</span>
+    </div>
+
+    <div class="requirement-grid">
+      <article class="requirement">
+        <h3>Organiser Home</h3>
+        <div class="route">/app/organiser/home</div>
+        <div class="subgrid">
+          <div class="must"><b>Must include</b><span>KPI strip, pending result queue, dispute queue, pitch conflict alerts, sponsor delivery alert, deadline widget.</span></div>
+          <div class="must"><b>Behavior</b><span>Auto-refresh every 30s; optimistic updates for status changes; one-click drill-down to results and scheduling.</span></div>
+          <div class="must"><b>Acceptance</b><span>At least 90% of unresolved results surfaced without scrolling on desktop.</span></div>
+        </div>
+      </article>
+
+      <article class="requirement">
+        <h3>League Control</h3>
+        <div class="route">/app/organiser/league-control</div>
+        <div class="subgrid">
+          <div class="must"><b>Must include</b><span>Drag-drop fixture board, pitch occupancy map, referee assignment panel, weather notice panel.</span></div>
+          <div class="must"><b>Behavior</b><span>Conflict detection under 100ms after move; block save on unresolved overlap; auto-suggest two alternatives.</span></div>
+          <div class="must"><b>Acceptance</b><span>All fixture edits produce audit entries with user, timestamp, and old/new values.</span></div>
+        </div>
+      </article>
+
+      <article class="requirement">
+        <h3>Result Inbox</h3>
+        <div class="route">/app/organiser/results</div>
+        <div class="subgrid">
+          <div class="must"><b>Must include</b><span>Submission timeline, captain-vs-opponent comparison, dispute state machine, communication shortcuts.</span></div>
+          <div class="must"><b>Behavior</b><span>States: submitted, awaiting confirmation, disputed, resolved, locked. Dispute notes mandatory before resolve.</span></div>
+          <div class="must"><b>Acceptance</b><span>Median dispute resolution under 4 hours from first dispute flag.</span></div>
+        </div>
+      </article>
+
+      <article class="requirement">
+        <h3>Captain Result Link</h3>
+        <div class="route">/r/:token</div>
+        <div class="subgrid">
+          <div class="must"><b>Must include</b><span>Single match context, goals and points input, computed totals preview, confirmation and success receipt.</span></div>
+          <div class="must"><b>Behavior</b><span>Token scoped to one match; token expiry enforced; duplicate submission idempotent with clear message.</span></div>
+          <div class="must"><b>Acceptance</b><span>Median completion time under 30 seconds on mobile 4G conditions.</span></div>
+        </div>
+      </article>
+
+      <article class="requirement">
+        <h3>Public League Page</h3>
+        <div class="route">/league/:slug</div>
+        <div class="subgrid">
+          <div class="must"><b>Must include</b><span>Standings table, upcoming fixtures, recent results, sponsor slot, share controls, clear last-updated stamp.</span></div>
+          <div class="must"><b>Behavior</b><span>No auth required; CDN cached with rapid invalidation after result confirmation; OG tags for sharing.</span></div>
+          <div class="must"><b>Acceptance</b><span>Largest contentful paint under 2.5s on median mobile.</span></div>
+        </div>
+      </article>
+
+      <article class="requirement">
+        <h3>Coach Hub</h3>
+        <div class="route">/app/club/:clubId/coach-hub</div>
+        <div class="subgrid">
+          <div class="must"><b>Must include</b><span>Squad status board, retention radar, attendance signals, upcoming match prep panel, action list.</span></div>
+          <div class="must"><b>Behavior</b><span>Highlight risk changes week-over-week; never rank minors publicly; support coach note capture in-line.</span></div>
+          <div class="must"><b>Acceptance</b><span>At-risk players always surfaced in top section without additional filtering.</span></div>
+        </div>
+      </article>
+
+      <article class="requirement">
+        <h3>Squad Roster</h3>
+        <div class="route">/app/club/:clubId/squad/:squadId</div>
+        <div class="subgrid">
+          <div class="must"><b>Must include</b><span>Roster list, position and availability filters, quick-contact actions, attendance trend markers.</span></div>
+          <div class="must"><b>Behavior</b><span>Bulk updates for training attendance; instant search by player and guardian names.</span></div>
+          <div class="must"><b>Acceptance</b><span>Search returns first result in under 200ms with 300-player dataset.</span></div>
+        </div>
+      </article>
+
+      <article class="requirement">
+        <h3>Player Profile</h3>
+        <div class="route">/app/club/:clubId/player/:playerId</div>
+        <div class="subgrid">
+          <div class="must"><b>Must include</b><span>Season timeline, appearance history, match context, coach notes, locked ratings/trial panel when consent missing.</span></div>
+          <div class="must"><b>Behavior</b><span>Consent gate checked on every load; lock state is explicit with reason and request-consent action.</span></div>
+          <div class="must"><b>Acceptance</b><span>No ratings UI data is rendered when consent is absent or revoked.</span></div>
+        </div>
+      </article>
+
+      <article class="requirement">
+        <h3>Consent Vault</h3>
+        <div class="route">/app/club/:clubId/compliance/consent</div>
+        <div class="subgrid">
+          <div class="must"><b>Must include</b><span>Per-player feature matrix, guardian status, request history, immutable audit timeline, reminder workflow.</span></div>
+          <div class="must"><b>Behavior</b><span>Every consent change logs actor, channel, timestamp, and legal text version; exportable audit report.</span></div>
+          <div class="must"><b>Acceptance</b><span>Audit records cannot be edited through UI by any role.</span></div>
+        </div>
+      </article>
+
+      <article class="requirement">
+        <h3>Sponsor Studio</h3>
+        <div class="route">/app/organiser/sponsors</div>
+        <div class="subgrid">
+          <div class="must"><b>Must include</b><span>Slot inventory, campaign builder, promised-vs-delivered tracker, auto-generated sponsor report.</span></div>
+          <div class="must"><b>Behavior</b><span>Warn when campaign drops below contracted delivery threshold; suggest replacement placements.</span></div>
+          <div class="must"><b>Acceptance</b><span>Weekly sponsor report generated in one click and exportable to PDF.</span></div>
+        </div>
+      </article>
+
+      <article class="requirement">
+        <h3>Reports and Exports</h3>
+        <div class="route">/app/organiser/reports</div>
+        <div class="subgrid">
+          <div class="must"><b>Must include</b><span>County board standings pack, disciplinary report, sponsor campaign report, club intelligence summary export.</span></div>
+          <div class="must"><b>Behavior</b><span>Scheduled exports with email delivery; manual on-demand export with progress indicator.</span></div>
+          <div class="must"><b>Acceptance</b><span>Exports include generation timestamp and source season metadata.</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <div>
+        <h2>Priority Build Sequence</h2>
+        <p>Implementation order to balance market impact and technical risk for GAA-first rollout.</p>
+      </div>
+      <span class="badge">Delivery Plan</span>
+    </div>
+    <table class="table">
+      <tr><th>Phase</th><th>Pages</th><th>Reason</th><th>Exit criteria</th></tr>
+      <tr>
+        <td><b>Phase 1</b></td>
+        <td>Landing, Pricing, Pilot Program, /app/organiser/home, /r/:token, /league/:slug</td>
+        <td>Acquire leagues and prove no-login result workflow.</td>
+        <td>10+ active leagues and stable result confirmation loop.</td>
+      </tr>
+      <tr>
+        <td><b>Phase 2</b></td>
+        <td>League Control, Result Inbox, Sponsor Studio, Reports</td>
+        <td>Scale organiser operations and monetisation.</td>
+        <td>Conflict resolution and sponsor reporting adopted weekly.</td>
+      </tr>
+      <tr>
+        <td><b>Phase 3</b></td>
+        <td>Coach Hub, Squad, Player Profile, Consent Vault</td>
+        <td>Activate paid Club Intelligence with compliance guardrails.</td>
+        <td>Consent workflow live and Plus-tier modules safely unlocked.</td>
+      </tr>
+    </table>
+  </section>
+
+  <p class="footer-note">This concept intentionally removes top pill tabs and replaces them with a production-grade site/app architecture model plus page-level requirements.</p>
+</div>
+</body>
+</html>
