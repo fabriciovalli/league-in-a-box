@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light">
+<title>League in a Box &amp; Club Intelligence — Product Requirements Document</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light;
+    --pitch:#14342B;
+    --pitch-deep:#0E2620;
+    --chalk:#F7F5F0;
+    --chalk-dim:#EDE9E0;
+    --ink:#1A1A1A;
+    --ink-soft:#5B5B57;
+    --clay:#D4622A;
+    --gold:#C9A646;
+    --sage:#8FBBA8;
+    --line: rgba(20,52,43,0.16);
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme: light;}
+  html,body{margin:0;padding:0;background:var(--chalk);}
+  body{
+    background:var(--chalk);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    line-height:1.65;
+  }
+  .page{max-width:760px;margin:0 auto;padding:0 24px 100px;}
+
+  /* ---------- cover ---------- */
+  .cover{
+    background:var(--pitch);
+    color:var(--chalk);
+    margin:0 -24px 0;
+    padding:60px 40px 48px;
+    position:relative;
+    overflow:hidden;
+  }
+  .cover::before{
+    content:"";position:absolute;inset:0;
+    background-image:repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 40px);
+    pointer-events:none;
+  }
+  .cover-inner{position:relative;z-index:1;}
+  .cover-brand{
+    display:flex;align-items:center;gap:8px;font-family:'Oswald',sans-serif;
+    font-weight:600;font-size:13px;letter-spacing:0.03em;color:#C9DED4;
+    margin-bottom:40px;
+  }
+  .cover-brand .mark{width:18px;height:18px;border-radius:4px;background:var(--clay);display:inline-flex;align-items:center;justify-content:center;}
+  .cover-brand .mark svg{width:10px;height:10px;}
+  .cover-eyebrow{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:#E89165;font-weight:700;margin-bottom:10px;}
+  .cover-title{font-family:'Archivo Black',sans-serif;font-size:34px;line-height:1.18;margin:0 0 14px;letter-spacing:-0.01em;max-width:520px;color:var(--chalk);}
+  .cover-sub{font-size:15px;color:#D7E6DD;max-width:480px;margin-bottom:32px;}
+  .cover-meta{display:flex;gap:28px;font-size:12px;color:#AEC9BE;border-top:1px solid rgba(143,187,168,0.25);padding-top:18px;}
+  .cover-meta div b{display:block;color:var(--chalk);font-weight:600;font-size:13px;margin-top:2px;}
+
+  /* ---------- toc ---------- */
+  .toc{
+    background:#fff;border:1px solid var(--line);border-radius:0 0 12px 12px;
+    margin:0 -24px 48px;padding:28px 40px 30px;
+  }
+  .toc-title{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;margin-bottom:14px;}
+  .toc-list{columns:2;column-gap:32px;list-style:none;margin:0;padding:0;}
+  .toc-list li{font-size:13px;margin-bottom:9px;display:flex;gap:8px;}
+  .toc-list a{color:var(--ink);text-decoration:none;}
+  .toc-list a:hover{color:var(--clay);}
+  .toc-num{color:var(--clay);font-weight:700;font-family:'Oswald',sans-serif;font-size:12px;flex-shrink:0;width:20px;}
+
+  /* ---------- sections ---------- */
+  section{margin-bottom:46px;}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;padding-bottom:10px;border-bottom:2px solid var(--pitch);}
+  .sec-num{font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;color:var(--clay);}
+  .sec-title{font-family:'Oswald',sans-serif;font-weight:600;font-size:19px;color:var(--pitch);}
+  h3{font-family:'Oswald',sans-serif;font-weight:600;font-size:14.5px;color:var(--pitch);margin:24px 0 10px;}
+  p{margin:0 0 12px;color:var(--ink);}
+  .lede{font-family:'Source Serif 4',serif;font-size:16.5px;line-height:1.6;color:var(--ink);margin-bottom:18px;}
+  ul,ol{margin:0 0 14px;padding-left:20px;}
+  li{margin-bottom:6px;}
+  strong{color:var(--pitch);}
+
+  /* ---------- callout ---------- */
+  .callout{
+    background:#fff;border-left:3px solid var(--clay);border-radius:0 8px 8px 0;
+    padding:14px 18px;margin:18px 0;font-size:13.5px;color:var(--ink-soft);
+  }
+  .callout b{color:var(--pitch);}
+  .callout.warn{border-left-color:#A84A1E;background:rgba(212,98,42,0.05);}
+
+  /* ---------- tables ---------- */
+  table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:13px;}
+  th{
+    text-align:left;font-size:10.5px;letter-spacing:0.04em;text-transform:uppercase;
+    color:var(--ink-soft);padding:8px 12px;border-bottom:2px solid var(--pitch);
+  }
+  td{padding:10px 12px;border-bottom:1px solid var(--chalk-dim);vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  td.num{font-family:'Oswald',sans-serif;font-weight:600;color:var(--pitch);white-space:nowrap;}
+  .tbl-card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px 14px;}
+
+  /* ---------- two-col ---------- */
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .pillar{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px;}
+  .pillar.club{border-color:var(--clay);}
+  .pillar-tag{font-size:10px;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;margin-bottom:6px;}
+  .pillar-title{font-family:'Oswald',sans-serif;font-size:15px;font-weight:600;color:var(--pitch);margin-bottom:8px;}
+  .pillar p{font-size:13px;color:var(--ink-soft);margin-bottom:8px;}
+  @media (max-width:640px){.twocol{grid-template-columns:1fr;}.toc-list{columns:1;}}
+
+  /* ---------- risk tiers ---------- */
+  .risk-tier{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--chalk-dim);}
+  .risk-tier:last-child{border-bottom:none;}
+  .risk-badge{
+    flex-shrink:0;width:74px;text-align:center;height:fit-content;
+    font-size:10.5px;font-weight:700;padding:5px 0;border-radius:6px;letter-spacing:0.02em;
+  }
+  .risk-badge.safe{background:rgba(143,187,168,0.25);color:#1F5C42;}
+  .risk-badge.care{background:rgba(201,166,70,0.22);color:#8A6A1E;}
+  .risk-badge.gate{background:rgba(212,98,42,0.16);color:#A84A1E;}
+  .risk-body h4{font-size:13.5px;font-weight:600;color:var(--pitch);margin:0 0 4px;}
+  .risk-body p{font-size:12.5px;color:var(--ink-soft);margin:0;}
+
+  /* ---------- roadmap ---------- */
+  .phase{display:flex;gap:16px;margin-bottom:18px;}
+  .phase-marker{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--pitch);color:var(--chalk);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:600;font-size:13px;}
+  .phase-body h4{font-size:14px;font-weight:600;color:var(--pitch);margin:4px 0 4px;}
+  .phase-body p{font-size:13px;color:var(--ink-soft);margin:0;}
+
+  footer{
+    margin-top:60px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:11px;color:var(--ink-soft);display:flex;justify-content:space-between;
+  }
+
+  @media print{
+    body{background:#fff;}
+    .cover{margin:0;}
+    section{margin-bottom:28px;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="cover">
+    <div class="cover-inner">
+      <div class="cover-brand">
+        <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#F7F5F0" stroke-width="2.5"><path d="M12 2v20M2 12h20"/></svg></span>
+        LEAGUE IN A BOX
+      </div>
+      <p class="cover-eyebrow">Product Requirements Document &middot; v1.0</p>
+      <h1 class="cover-title">A league table that updates itself, and the club intelligence layer built on top of it</h1>
+      <p class="cover-sub">Two connected products for Irish grassroots sport: a free-to-low-cost tool for league organisers, and a paid player-history platform for club management.</p>
+      <div class="cover-meta">
+        <div>Prepared<b>June 2026</b></div>
+        <div>Market<b>Ireland &middot; GAA &amp; soccer</b></div>
+        <div>Status<b>Concept &amp; prototype</b></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ul class="toc-list">
+      <li><span class="toc-num">01</span><a href="#problem">The problem</a></li>
+      <li><span class="toc-num">02</span><a href="#products">Two products, two buyers</a></li>
+      <li><span class="toc-num">03</span><a href="#market">Market size</a></li>
+      <li><span class="toc-num">04</span><a href="#competitive">Competitive landscape</a></li>
+      <li><span class="toc-num">05</span><a href="#league-spec">League in a Box &mdash; spec</a></li>
+      <li><span class="toc-num">06</span><a href="#club-spec">Club Intelligence &mdash; spec</a></li>
+      <li><span class="toc-num">07</span><a href="#data-risk">Data &amp; child-safety approach</a></li>
+      <li><span class="toc-num">08</span><a href="#pricing">Pricing &amp; revenue model</a></li>
+      <li><span class="toc-num">09</span><a href="#roadmap">Roadmap</a></li>
+      <li><span class="toc-num">10</span><a href="#open">Open questions for partners</a></li>
+    </ul>
+  </div>
+
+  <section id="problem">
+    <div class="sec-head"><span class="sec-num">01</span><span class="sec-title">The problem</span></div>
+    <p class="lede">Irish grassroots sport runs on volunteers, spreadsheets, and WhatsApp &mdash; and the tools built to fix that have settled around serving the club's membership and payments, not the people running the league itself or the coaches trying to develop players over years.</p>
+    <p>Every week, hundreds of amateur soccer and GAA leagues across Ireland are organised by a volunteer manually maintaining a league table, chasing captains for results over text, and recalculating standings by hand. At the same time, clubs developing young players from U8 through to adult level keep almost no structured record of a player's journey &mdash; appearances, position, involvement, development &mdash; despite this being exactly the information that helps a club retain players and identify who's ready for representative trials.</p>
+    <p>Existing platforms (ClubZap, Pitchero, ClubSpot, LeagueRepublic) are built around club membership, payments, and communications. The league table is a secondary feature, and long-term player development data isn't meaningfully addressed by any of them at the grassroots level.</p>
+  </section>
+
+  <section id="products">
+    <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">Two products, two buyers</span></div>
+    <p>This is deliberately structured as two connected products sold to two different people, because they solve different problems and have different willingness to pay.</p>
+    <div class="twocol">
+      <div class="pillar">
+        <div class="pillar-tag">Product 1 &middot; the funnel</div>
+        <div class="pillar-title">League in a Box</div>
+        <p><b>Sold to:</b> the volunteer running a league &mdash; a county secretary, a 5-a-side organiser, an SFAI division coordinator.</p>
+        <p><b>Job to be done:</b> replace the spreadsheet with a live, shareable league table and a zero-friction result submission flow for team captains.</p>
+        <p><b>Why it matters strategically:</b> it's free or near-free by design. Its real value is distribution &mdash; every club playing in a league sees the product every week, which feeds the second product.</p>
+      </div>
+      <div class="pillar club">
+        <div class="pillar-tag">Product 2 &middot; the business</div>
+        <div class="pillar-title">Club Intelligence</div>
+        <p><b>Sold to:</b> club management &mdash; chairperson, underage development officer, club committee.</p>
+        <p><b>Job to be done:</b> give the club a structured, multi-season record of every player's match history, involvement, and development &mdash; to inform retention conversations and representative recommendations.</p>
+        <p><b>Why it matters strategically:</b> clubs have actual budget (membership fees, sponsorship, lotto income) and a real reason to pay monthly. This is where the revenue case lives.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="market">
+    <div class="sec-head"><span class="sec-num">03</span><span class="sec-title">Market size</span></div>
+    <p>The addressable market is the club, not the county. There are far more clubs than counties, and clubs are the entity with both the data need and the budget.</p>
+    <div class="tbl-card">
+      <table>
+        <tr><th>Segment</th><th>Size</th><th>Source basis</th></tr>
+        <tr><td>GAA clubs, Republic of Ireland</td><td class="num">~2,200</td><td>32 counties, GAA-affiliated</td></tr>
+        <tr><td>Soccer grassroots clubs, FAI-affiliated</td><td class="num">~1,180</td><td>78 affiliated leagues</td></tr>
+        <tr><td>Combined addressable clubs</td><td class="num">~3,380</td><td>GAA + soccer, Republic only</td></tr>
+        <tr><td>Organised leagues above club level</td><td class="num">~110+</td><td>32 SFAI + 78 FAI leagues + county boards</td></tr>
+      </table>
+    </div>
+    <h3>What this means for revenue</h3>
+    <div class="tbl-card">
+      <table>
+        <tr><th>Scenario</th><th>Penetration</th><th>Blended price</th><th>Monthly revenue</th></tr>
+        <tr><td>Early traction, one or two counties</td><td class="num">5%</td><td>&euro;25/mo</td><td class="num">&euro;4,200</td></tr>
+        <tr><td>Established, word-of-mouth across counties</td><td class="num">10%</td><td>&euro;25/mo</td><td class="num">&euro;8,500</td></tr>
+      </table>
+    </div>
+    <div class="callout">
+      <b>Why penetration matters more than price.</b> Raising the price on a small base barely moves the outcome. Moving from 5% to 15% penetration within a county changes the business entirely. The GAA's own structure &mdash; county boards sitting above individual clubs &mdash; is a natural distribution wedge: one relationship with a county board can open warm introductions to every affiliated club underneath it.
+    </div>
+  </section>
+
+  <section id="competitive">
+    <div class="sec-head"><span class="sec-num">04</span><span class="sec-title">Competitive landscape</span></div>
+    <div class="tbl-card">
+      <table>
+        <tr><th>Platform</th><th>Built for</th><th>Where the gap is</th></tr>
+        <tr>
+          <td><b>ClubZap / ClubSpot</b></td>
+          <td>Club membership, payments, comms</td>
+          <td>League table and player history are secondary features, not the focus</td>
+        </tr>
+        <tr>
+          <td><b>Pitchero</b></td>
+          <td>Club websites, basic attendance/scorer tracking</td>
+          <td>No structured multi-season player development record</td>
+        </tr>
+        <tr>
+          <td><b>LeagueRepublic</b></td>
+          <td>Fixture and competition management</td>
+          <td>Reviewers describe it as overwhelming; desktop-era interface</td>
+        </tr>
+        <tr>
+          <td><b>SportLoMo</b></td>
+          <td>Governing-body registration systems (SFAI, GAA Foireann)</td>
+          <td>Built for compliance and registration, not day-to-day league or development use</td>
+        </tr>
+      </table>
+    </div>
+    <p>None of these treat the league organiser as a first-class user, and none offer a coach-facing, multi-season player development view designed around retention rather than ranking.</p>
+  </section>
+
+  <section id="league-spec">
+    <div class="sec-head"><span class="sec-num">05</span><span class="sec-title">League in a Box &mdash; functional spec</span></div>
+    <h3>Core features</h3>
+    <ul>
+      <li>League creation &mdash; divisions, teams, season dates</li>
+      <li>Public league page &mdash; live table, fixtures, results, no login required to view</li>
+      <li>Result submission &mdash; captain opens a direct link (no account) to confirm a score</li>
+      <li>Automatic table recalculation on result confirmation</li>
+      <li>Sponsor banner slot on the public page (organiser can sell locally)</li>
+    </ul>
+    <h3>Phase 2 additions</h3>
+    <ul>
+      <li>Automated fixture scheduling across shared pitches</li>
+      <li>Referee/umpire assignment</li>
+      <li>Multi-season public archive (becomes a long-term SEO and trust asset)</li>
+      <li>GAA scoring format support (goals/points) alongside soccer</li>
+    </ul>
+  </section>
+
+  <section id="club-spec">
+    <div class="sec-head"><span class="sec-num">06</span><span class="sec-title">Club Intelligence &mdash; functional spec</span></div>
+    <h3>Core data captured per match</h3>
+    <ul>
+      <li>Opposition, venue (home/away), competition/division, pitch surface</li>
+      <li>Formation/team structure</li>
+      <li>Final score, scorers, assists, and timing of scores (e.g. which quarter/half)</li>
+      <li>Manager's free-text match report</li>
+    </ul>
+    <h3>Core data captured per player</h3>
+    <ul>
+      <li>Appearance history &mdash; minutes, position, season-by-season trend</li>
+      <li>Scoring and assist record over time</li>
+      <li>Manager's notes tied to specific matches</li>
+    </ul>
+    <p>This is the layer the prototype currently demonstrates: a roster view, an individual player profile with a season-by-season involvement trend, and a match log. See the accompanying interactive prototype for the working version of this screen.</p>
+  </section>
+
+  <section id="data-risk">
+    <div class="sec-head"><span class="sec-num">07</span><span class="sec-title">Data &amp; child-safety approach</span></div>
+    <p class="lede">This is the most important section for any partner evaluating this product. Player development data on minors is high-value and high-risk, and the product is deliberately structured to keep those separate.</p>
+    <div class="callout warn">
+      <b>Context.</b> Ireland's digital age of consent is 16; processing a child's personal data generally requires parental consent below that age, and the Irish Data Protection Commission explicitly flags sports clubs as organisations likely to be accessed by children, triggering extra obligations. The DPC has shown real enforcement appetite against far larger organisations over exactly this category of risk.
+    </div>
+    <h3>Feature tiers, by risk</h3>
+    <div class="risk-tier">
+      <span class="risk-badge safe">LOW RISK</span>
+      <div class="risk-body">
+        <h4>Team &amp; match-level record</h4>
+        <p>Formation, scorers, results, surface, division, manager's report. No individual ranking. Safe to build first, for any age group.</p>
+      </div>
+    </div>
+    <div class="risk-tier">
+      <span class="risk-badge care">BUILD WITH CARE</span>
+      <div class="risk-body">
+        <h4>Individual appearance history</h4>
+        <p>Minutes, position, involvement trend over seasons. Framed as a player's own journey, not a comparison against teammates. Visible to coaches and, ideally, the player's own guardian.</p>
+      </div>
+    </div>
+    <div class="risk-tier">
+      <span class="risk-badge gate">CONSENT-GATED</span>
+      <div class="risk-body">
+        <h4>Ratings &amp; trial/tournament recommendations</h4>
+        <p>The highest-value feature for club management, and the highest-risk for minors. Internal to the club only, never visible publicly or to other clubs, and not enabled for any player until explicit parental consent is on file. Requires a formal data protection review before broad rollout.</p>
+      </div>
+    </div>
+    <p>The build sequencing follows this risk order: ship the low-risk tier broadly first, ship the care tier for adult and consenting youth players, and hold the consent-gated tier behind a legal review and a single pilot club before wider release.</p>
+  </section>
+
+  <section id="pricing">
+    <div class="sec-head"><span class="sec-num">08</span><span class="sec-title">Pricing &amp; revenue model</span></div>
+    <div class="tbl-card">
+      <table>
+        <tr><th>Product</th><th>Tier</th><th>Price</th><th>Includes</th></tr>
+        <tr><td rowspan="2">League in a Box</td><td>Free</td><td class="num">&euro;0</td><td>1 league, up to 10 teams, live table &amp; fixtures</td></tr>
+        <tr><td>Organiser</td><td class="num">&euro;15/mo</td><td>Unlimited divisions, custom domain, sponsor slot</td></tr>
+        <tr><td rowspan="2">Club Intelligence</td><td>Standard</td><td class="num">&euro;19/mo</td><td>Full match &amp; player history, involvement tracking, notes</td></tr>
+        <tr><td>Plus</td><td class="num">&euro;39/mo</td><td>+ Consent-gated ratings, trial flags, data export</td></tr>
+      </table>
+    </div>
+    <p>League pricing is intentionally low &mdash; its function is adoption and distribution, not margin. Club Intelligence carries the actual revenue case, priced against what a club committee can reasonably approve as a recurring software line, comparable to existing club software spend already in the market.</p>
+  </section>
+
+  <section id="roadmap">
+    <div class="sec-head"><span class="sec-num">09</span><span class="sec-title">Roadmap</span></div>
+    <div class="phase">
+      <div class="phase-marker">1</div>
+      <div class="phase-body">
+        <h4>Build &amp; pilot League in a Box</h4>
+        <p>Launch with one or two real leagues (likely soccer, given lower data sensitivity). Validate the captain-submission flow and table-sharing behaviour in practice.</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-marker">2</div>
+      <div class="phase-body">
+        <h4>Layer in Club Intelligence, low-risk tier only</h4>
+        <p>Team and match-level record, offered to clubs already inside a piloted league. No individual ratings yet.</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-marker">3</div>
+      <div class="phase-body">
+        <h4>Data protection review</h4>
+        <p>Formal review of consent flows, retention, and deletion policy ahead of enabling individual ratings and trial recommendations.</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-marker">4</div>
+      <div class="phase-body">
+        <h4>County-board led expansion</h4>
+        <p>Approach county boards directly as a distribution wedge into their affiliated club base, rather than selling club by club.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="open">
+    <div class="sec-head"><span class="sec-num">10</span><span class="sec-title">Open questions for partners</span></div>
+    <ul>
+      <li>Does a partner have existing relationships with GAA county boards or FAI-affiliated leagues that could shortcut the pilot stage?</li>
+      <li>What's the right legal structure for parental consent capture &mdash; at club registration, or per-feature opt-in?</li>
+      <li>Should Club Intelligence integrate with existing club registration systems (e.g. Foireann), or remain fully standalone?</li>
+      <li>Is there appetite to pilot the consent-gated ratings tier with a single trusted club before broader rollout?</li>
+    </ul>
+  </section>
+
+  <footer>
+    <span>League in a Box &amp; Club Intelligence &mdash; Product Requirements Document</span>
+    <span>v1.0 &middot; June 2026</span>
+  </footer>
+
+</div>
+</body>
+</html>

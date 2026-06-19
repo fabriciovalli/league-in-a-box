@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>League in a Box — prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pitch:#14342B;
+    --pitch-deep:#0E2620;
+    --chalk:#F7F5F0;
+    --chalk-dim:#EDE9E0;
+    --ink:#1A1A1A;
+    --ink-soft:#5B5B57;
+    --clay:#D4622A;
+    --clay-deep:#A84A1E;
+    --gold:#C9A646;
+    --sage:#8FBBA8;
+    --line: rgba(20,52,43,0.14);
+    --radius: 10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--chalk);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.5;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:22px 0 18px;
+  }
+  .brand{
+    font-family:'Oswald',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:0.02em;
+    color:var(--pitch);
+    display:flex;align-items:center;gap:8px;
+  }
+  .brand .mark{
+    width:20px;height:20px;border-radius:4px;background:var(--pitch);
+    display:inline-flex;align-items:center;justify-content:center;
+  }
+  .brand .mark svg{width:12px;height:12px;}
+  .tag{
+    font-size:11px;color:var(--ink-soft);
+    border:1px solid var(--line);
+    padding:4px 10px;border-radius:20px;
+  }
+
+  /* ---------- view switch ---------- */
+  .view-switch{
+    display:flex;gap:6px;background:var(--chalk-dim);
+    border-radius:10px;padding:4px;margin-bottom:28px;
+  }
+  .view-switch button{
+    flex:1;border:none;background:none;padding:9px 4px;
+    font-family:'Inter',sans-serif;font-size:12.5px;font-weight:600;
+    color:var(--ink-soft);border-radius:7px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+  }
+  .view-switch button.active{background:#fff;color:var(--pitch);box-shadow:0 1px 2px rgba(0,0,0,0.06);}
+  .view-switch svg{width:14px;height:14px;}
+
+  /* ---------- hero band ---------- */
+  .hero{
+    background:var(--pitch);
+    border-radius:14px;
+    padding:28px 26px 22px;
+    color:var(--chalk);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 38px);
+    pointer-events:none;
+  }
+  .hero-top{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    position:relative;z-index:1;
+  }
+  .hero-eyebrow{
+    font-size:11px;letter-spacing:0.08em;text-transform:uppercase;
+    color:var(--sage); font-weight:600; margin:0 0 4px;
+  }
+  .hero-title{
+    font-family:'Archivo Black',sans-serif;
+    font-size:25px; line-height:1.15; margin:0;
+    letter-spacing:-0.01em;
+  }
+  .hero-sub{
+    font-size:13px;color:var(--sage);margin-top:6px;
+  }
+  .live-pill{
+    display:flex;align-items:center;gap:6px;
+    font-size:11px;font-weight:600;color:var(--clay);
+    background:rgba(212,98,42,0.14);
+    padding:5px 10px;border-radius:20px;
+    white-space:nowrap;
+  }
+  .live-dot{
+    width:6px;height:6px;border-radius:50%;background:var(--clay);
+    animation:pulse 1.6s infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.25;}}
+
+  /* ---------- table ---------- */
+  .table-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:14px;
+    margin-top:-18px;
+    position:relative; z-index:2;
+    padding:6px 18px 4px;
+    box-shadow:0 1px 0 rgba(0,0,0,0.02);
+  }
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{
+    text-align:center;font-weight:600;font-size:10.5px;
+    letter-spacing:0.04em;color:var(--ink-soft);
+    padding:14px 4px 8px;
+    border-bottom:1px solid var(--line);
+  }
+  thead th:nth-child(2){text-align:left;}
+  thead th:first-child{text-align:left;width:26px;}
+  tbody td{padding:10px 4px;text-align:center;border-bottom:1px solid var(--chalk-dim);}
+  tbody td:first-child{
+    text-align:left;color:var(--ink-soft);font-weight:600;width:26px;
+  }
+  tbody td:nth-child(2){
+    text-align:left;font-weight:600;font-size:13.5px;
+  }
+  tbody td:last-child{font-weight:700;color:var(--pitch);}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr.qualify td:first-child{ color:var(--gold); }
+  .crest{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:18px;height:18px;border-radius:4px;
+    background:var(--chalk-dim);
+    font-size:9px;font-weight:700;color:var(--ink-soft);
+    margin-right:8px;vertical-align:-4px;
+  }
+  @keyframes flash{0%{background:rgba(212,98,42,0.16);}100%{background:transparent;}}
+  tr.row-flash{animation:flash 1.6s ease-out;}
+
+  .table-foot{
+    display:flex;align-items:center;gap:8px;
+    padding:14px 4px 16px;
+    font-size:12px;color:var(--ink-soft);
+    border-top:1px solid var(--line);margin-top:2px;
+  }
+  .table-foot svg{width:14px;height:14px;flex-shrink:0;}
+
+  /* ---------- section heading ---------- */
+  .section-head{
+    display:flex;align-items:baseline;gap:10px;
+    margin:48px 0 16px;
+  }
+  .section-num{
+    font-family:'Oswald',sans-serif;font-weight:600;
+    font-size:12px;color:var(--clay);letter-spacing:0.04em;
+  }
+  .section-title{
+    font-family:'Oswald',sans-serif;font-weight:600;
+    font-size:16px;color:var(--pitch);
+  }
+  .section-desc{font-size:13px;color:var(--ink-soft);margin:-4px 0 18px;}
+
+  /* ---------- captain flow card ---------- */
+  .phone{
+    max-width:340px;margin:0 auto;
+    background:#fff;border:1px solid var(--line);border-radius:18px;
+    padding:18px;
+  }
+  .phone-meta{font-size:11px;color:var(--ink-soft);margin-bottom:14px;}
+  .fixture-row{
+    display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:18px;
+  }
+  .fixture-team{flex:1;text-align:center;font-size:13px;font-weight:600;}
+  .score-input{
+    width:46px;text-align:center;font-size:20px;font-weight:700;
+    font-family:'Oswald',sans-serif;
+    padding:6px 0;border:1px solid var(--line);border-radius:8px;
+    color:var(--pitch); background:var(--chalk);
+  }
+  .score-input:focus{outline:none;border-color:var(--clay);}
+  .dash{color:var(--ink-soft);font-weight:600;}
+  .btn-confirm{
+    width:100%;background:var(--pitch);color:var(--chalk);
+    border:none;padding:12px;font-size:14px;font-weight:600;
+    border-radius:9px;cursor:pointer;font-family:'Inter',sans-serif;
+  }
+  .btn-confirm:active{transform:scale(0.99);}
+  .confirm-msg{
+    display:none;align-items:center;gap:6px;justify-content:center;
+    font-size:12.5px;color:#2C6E49;margin-top:12px;font-weight:600;
+  }
+  .confirm-msg svg{width:14px;height:14px;}
+  .phone-caption{
+    text-align:center;font-size:12px;color:var(--ink-soft);margin-top:14px;
+  }
+
+  /* ---------- comparison ---------- */
+  .compare-grid{
+    display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;
+  }
+  .compare-card{
+    border:1px solid var(--line);border-radius:12px;padding:16px 14px;
+    background:#fff;
+  }
+  .compare-card.featured{
+    border:2px solid var(--clay);
+    background:linear-gradient(180deg, rgba(212,98,42,0.04), #fff 60px);
+  }
+  .compare-name{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--pitch);}
+  .compare-badge{
+    display:inline-block;background:var(--clay);color:#fff;
+    font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:12px;
+    margin-bottom:10px;
+  }
+  .compare-item{
+    display:flex;gap:7px;align-items:flex-start;margin-bottom:9px;
+    font-size:12px;color:var(--ink-soft);line-height:1.4;
+  }
+  .compare-item svg{width:13px;height:13px;flex-shrink:0;margin-top:2px;}
+  .compare-item.no svg{color:#B0AEA6;}
+  .compare-item.yes svg{color:var(--clay);}
+  .compare-item.yes{color:var(--ink);}
+
+  /* ---------- monetisation strip ---------- */
+  .tiers{
+    display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;
+  }
+  .tier{
+    border:1px solid var(--line);border-radius:12px;padding:16px 14px;background:#fff;
+  }
+  .tier-name{font-size:11px;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;}
+  .tier-price{
+    font-family:'Oswald',sans-serif;font-size:22px;font-weight:600;
+    color:var(--pitch);margin:6px 0 10px;
+  }
+  .tier-price span{font-size:12px;color:var(--ink-soft);font-weight:400;}
+  .tier ul{margin:0;padding:0;list-style:none;}
+  .tier li{
+    font-size:12px;color:var(--ink-soft);margin-bottom:7px;padding-left:14px;
+    position:relative;
+  }
+  .tier li::before{
+    content:"";position:absolute;left:0;top:7px;width:5px;height:5px;
+    border-radius:50%;background:var(--clay);
+  }
+  .tier.mid{border-color:var(--clay);}
+
+  /* ---------- market panel ---------- */
+  .market-panel{
+    background:#fff;border:1px solid var(--line);border-radius:12px;
+    padding:18px 20px;margin-bottom:18px;
+  }
+  .market-row{
+    display:flex;justify-content:space-between;align-items:baseline;
+    padding:10px 0;border-bottom:1px solid var(--chalk-dim);
+  }
+  .market-row:last-child{border-bottom:none;}
+  .market-label{font-size:12.5px;color:var(--ink-soft);}
+  .market-value{font-family:'Oswald',sans-serif;font-size:15px;font-weight:600;color:var(--pitch);}
+  .market-note{font-size:11px;color:var(--ink-soft);margin-top:10px;line-height:1.5;}
+
+  .product-split{
+    display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px;
+  }
+  .split-card{border:1px solid var(--line);border-radius:12px;padding:18px;background:#fff;}
+  .split-card.club{border-color:var(--clay);background:linear-gradient(180deg, rgba(212,98,42,0.04), #fff 70px);}
+  .split-eyebrow{font-size:10.5px;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;margin-bottom:4px;}
+  .split-title{font-family:'Oswald',sans-serif;font-size:15px;font-weight:600;color:var(--pitch);margin-bottom:10px;}
+  .split-role{font-size:11.5px;color:var(--ink-soft);margin-bottom:14px;}
+  @media (max-width:600px){.product-split{grid-template-columns:1fr;}}
+
+  footer{
+    margin-top:56px;padding-top:18px;border-top:1px solid var(--line);
+    font-size:11.5px;color:var(--ink-soft);text-align:center;
+  }
+
+  @media (max-width:600px){
+    .compare-grid, .tiers{grid-template-columns:1fr;}
+    .hero-title{font-size:21px;}
+    .club-grid{grid-template-columns:1fr;}
+  }
+
+  /* ====================================================== */
+  /* CLUB VIEW — coach-facing module                          */
+  /* ====================================================== */
+  .club-hero{
+    background:var(--pitch-deep);
+    border-radius:14px;padding:22px 24px;color:var(--chalk);
+    margin-bottom:24px;
+  }
+  .club-hero-eyebrow{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--sage);font-weight:600;margin:0 0 4px;}
+  .club-hero-title{font-family:'Archivo Black',sans-serif;font-size:22px;margin:0;}
+  .club-hero-note{font-size:12.5px;color:var(--sage);margin-top:8px;display:flex;gap:7px;align-items:flex-start;}
+  .club-hero-note svg{width:14px;height:14px;flex-shrink:0;margin-top:1px;}
+
+  .club-grid{display:grid;grid-template-columns:230px 1fr;gap:18px;align-items:start;}
+
+  .roster{
+    background:#fff;border:1px solid var(--line);border-radius:12px;
+    overflow:hidden;
+  }
+  .roster-head{
+    padding:12px 14px;font-size:11px;font-weight:700;letter-spacing:0.04em;
+    text-transform:uppercase;color:var(--ink-soft);border-bottom:1px solid var(--line);
+  }
+  .roster-item{
+    display:flex;align-items:center;gap:10px;
+    padding:11px 14px;border-bottom:1px solid var(--chalk-dim);
+    cursor:pointer;
+  }
+  .roster-item:last-child{border-bottom:none;}
+  .roster-item:hover{background:var(--chalk);}
+  .roster-item.active{background:rgba(212,98,42,0.08);}
+  .roster-avatar{
+    width:28px;height:28px;border-radius:50%;background:var(--chalk-dim);
+    display:flex;align-items:center;justify-content:center;
+    font-size:10px;font-weight:700;color:var(--ink-soft);flex-shrink:0;
+  }
+  .roster-item.active .roster-avatar{background:var(--clay);color:#fff;}
+  .roster-name{font-size:12.5px;font-weight:600;}
+  .roster-sub{font-size:10.5px;color:var(--ink-soft);}
+
+  .profile-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;}
+  .profile-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;}
+  .profile-name{font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;color:var(--pitch);}
+  .profile-meta{font-size:12px;color:var(--ink-soft);margin-top:3px;}
+  .profile-pill{font-size:10.5px;font-weight:600;color:var(--pitch);background:var(--chalk-dim);padding:4px 10px;border-radius:20px;}
+
+  .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+  .stat-box{background:var(--chalk);border-radius:9px;padding:10px 12px;}
+  .stat-num{font-family:'Oswald',sans-serif;font-size:19px;font-weight:600;color:var(--pitch);}
+  .stat-label{font-size:10px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.03em;margin-top:1px;}
+
+  .involve-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink-soft);margin-bottom:8px;}
+  .sparkline{display:flex;align-items:flex-end;gap:4px;height:48px;margin-bottom:20px;}
+  .spark-bar{flex:1;background:var(--sage);border-radius:3px 3px 0 0;min-height:4px;}
+  .spark-bar.low{background:var(--clay);}
+
+  .match-log{margin-bottom:20px;}
+  .match-row{
+    display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;
+    padding:9px 0;border-bottom:1px solid var(--chalk-dim);font-size:12px;
+  }
+  .match-row:last-child{border-bottom:none;}
+  .match-date{color:var(--ink-soft);font-size:11px;}
+  .match-opp{font-weight:600;}
+  .match-detail{font-size:10.5px;color:var(--ink-soft);margin-top:1px;}
+  .match-score{font-family:'Oswald',sans-serif;font-weight:600;color:var(--pitch);text-align:right;}
+
+  .report-box{
+    background:var(--chalk);border-radius:9px;padding:12px 14px;
+    font-size:12px;color:var(--ink-soft);font-style:italic;margin-bottom:20px;
+    border-left:3px solid var(--sage);
+  }
+
+  .locked-card{
+    border:1.5px dashed var(--line);border-radius:10px;padding:16px;
+    background:repeating-linear-gradient(135deg, rgba(20,52,43,0.025) 0 10px, transparent 10px 20px);
+  }
+  .locked-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .locked-head svg{width:15px;height:15px;color:var(--ink-soft);}
+  .locked-title{font-size:12.5px;font-weight:700;color:var(--pitch);}
+  .locked-desc{font-size:11.5px;color:var(--ink-soft);line-height:1.5;margin-bottom:10px;}
+  .consent-tag{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:10.5px;font-weight:600;color:#A84A1E;
+    background:rgba(212,98,42,0.1);padding:4px 9px;border-radius:14px;
+  }
+  .consent-tag svg{width:11px;height:11px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">
+      <span class="mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#F7F5F0" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>
+      </span>
+      League in a box
+    </div>
+    <div class="tag">Prototype &middot; not affiliated with the GAA</div>
+  </div>
+
+  <div class="view-switch">
+    <button class="active" id="btn-public" onclick="showView('public')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4.5 8-12V5l-8-3-8 3v5c0 7.5 8 12 8 12z"/></svg>
+      Public league page
+    </button>
+    <button id="btn-club" onclick="showView('club')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M12.5 3.5a4 4 0 1 1 0 8M20 21v-2a4 4 0 0 0-3-3.87"/></svg>
+      Club view &middot; coach login
+    </button>
+  </div>
+
+  <div id="view-public">
+
+  <!-- HERO: the public league table, the actual artifact people screenshot -->
+  <div class="hero">
+    <div class="hero-top">
+      <div>
+        <p class="hero-eyebrow">Balbriggan &amp; District League</p>
+        <h1 class="hero-title">Division 2</h1>
+        <p class="hero-sub">Matchday 14 &middot; updated automatically</p>
+      </div>
+      <div class="live-pill"><span class="live-dot"></span>LIVE</div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <div class="table-foot">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--clay)" stroke-width="2"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+      Table updates the moment a captain submits a score. No one recalculates this by hand.
+    </div>
+  </div>
+
+  <!-- SECTION: captain submission flow -->
+  <div class="section-head">
+    <span class="section-num">01</span>
+    <span class="section-title">What the captain sees</span>
+  </div>
+  <p class="section-desc">A link dropped straight into the team WhatsApp group. No app, no account, no password.</p>
+
+  <div class="phone">
+    <div class="phone-meta">Saturday 21 June &middot; St. Mochta's, pitch 2</div>
+    <div class="fixture-row">
+      <div class="fixture-team">Lusk Rovers</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input class="score-input" type="number" id="score-a" min="0" value="2">
+        <span class="dash">&ndash;</span>
+        <input class="score-input" type="number" id="score-b" min="0" value="1">
+      </div>
+      <div class="fixture-team">Balbriggan Town</div>
+    </div>
+    <button class="btn-confirm" onclick="submitResult()">Confirm result</button>
+    <div class="confirm-msg" id="confirm-msg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#2C6E49" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+      Result submitted — table updated instantly
+    </div>
+  </div>
+  <p class="phone-caption">Scroll up after confirming — watch the table reorder itself.</p>
+
+  <!-- SECTION: competitor comparison -->
+  <div class="section-head">
+    <span class="section-num">02</span>
+    <span class="section-title">How this differs from what's already out there</span>
+  </div>
+  <p class="section-desc">Existing tools are built for the club. This is built for whoever runs the league.</p>
+
+  <div class="compare-grid">
+    <div class="compare-card">
+      <div class="compare-name">ClubZap / Pitchero</div>
+      <div class="compare-item no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>Built for the club, not the league organiser</div>
+      <div class="compare-item no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>Captains need an account to submit a score</div>
+      <div class="compare-item no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>Payments and membership come first, table second</div>
+    </div>
+    <div class="compare-card">
+      <div class="compare-name">LeagueRepublic</div>
+      <div class="compare-item no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>Reviewers call it overwhelming — too many settings</div>
+      <div class="compare-item no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>Desktop-era interface, not mobile-first</div>
+      <div class="compare-item no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>Generic look, not shaped for Irish grassroots leagues</div>
+    </div>
+    <div class="compare-card featured">
+      <div class="compare-badge">League in a box</div>
+      <div class="compare-item yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Built for the league organiser first</div>
+      <div class="compare-item yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Captain submits from a link, no account needed</div>
+      <div class="compare-item yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>The table is the whole product, not a buried tab</div>
+    </div>
+  </div>
+
+  <!-- SECTION: pricing -->
+  <div class="section-head">
+    <span class="section-num">03</span>
+    <span class="section-title">Two products, two buyers</span>
+  </div>
+  <p class="section-desc">The league tier is the funnel. The club tier is the business.</p>
+
+  <div class="product-split">
+    <div class="split-card">
+      <div class="split-eyebrow">Funnel product</div>
+      <div class="split-title">League in a Box</div>
+      <div class="split-role">Sold to: the volunteer running a league. Job: get every club in the league looking at your branding, weekly, for free.</div>
+      <div class="tiers" style="grid-template-columns:1fr 1fr;display:grid;gap:8px;">
+        <div class="tier" style="padding:12px;">
+          <div class="tier-name">Free</div>
+          <div class="tier-price" style="font-size:17px;">&euro;0</div>
+          <ul><li>1 league, up to 10 teams</li><li>Live table &amp; fixtures</li></ul>
+        </div>
+        <div class="tier mid" style="padding:12px;">
+          <div class="tier-name">Organiser</div>
+          <div class="tier-price" style="font-size:17px;">&euro;15<span>/mo</span></div>
+          <ul><li>Unlimited divisions</li><li>Custom domain, sponsor slot</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="split-card club">
+      <div class="split-eyebrow">Revenue product</div>
+      <div class="split-title">Club Intelligence</div>
+      <div class="split-role">Sold to: the club committee/management. Job: give them the player history and retention insight no spreadsheet can.</div>
+      <div class="tiers" style="grid-template-columns:1fr 1fr;display:grid;gap:8px;">
+        <div class="tier" style="padding:12px;">
+          <div class="tier-name">Standard</div>
+          <div class="tier-price" style="font-size:17px;">&euro;19<span>/mo</span></div>
+          <ul><li>Full match &amp; player history</li><li>Involvement tracking, notes</li></ul>
+        </div>
+        <div class="tier mid" style="padding:12px;">
+          <div class="tier-name">Plus</div>
+          <div class="tier-price" style="font-size:17px;">&euro;39<span>/mo</span></div>
+          <ul><li>+ Consent-gated ratings</li><li>Trial flags, data export</li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="market-panel">
+    <div class="market-row">
+      <span class="market-label">GAA clubs in Ireland (all 32 counties)</span>
+      <span class="market-value">~2,200</span>
+    </div>
+    <div class="market-row">
+      <span class="market-label">Soccer grassroots clubs (FAI-affiliated)</span>
+      <span class="market-value">~1,180</span>
+    </div>
+    <div class="market-row">
+      <span class="market-label">Combined addressable clubs, Republic of Ireland</span>
+      <span class="market-value">~3,380</span>
+    </div>
+    <div class="market-row">
+      <span class="market-label">Club Intelligence at 5% penetration, blended &euro;25/mo</span>
+      <span class="market-value">&euro;4,200/mo</span>
+    </div>
+    <div class="market-row">
+      <span class="market-label">Club Intelligence at 10% penetration, blended &euro;25/mo</span>
+      <span class="market-value">&euro;8,500/mo</span>
+    </div>
+    <p class="market-note">League subscriptions are the distribution channel, not the revenue plan — every league page is seen weekly by every club playing in it. The club tier, sold per club rather than per league, is where this becomes a real business. Penetration within a county matters more than price: going county board by county board (the GAA's own structure) turns one sale into dozens of warm introductions.</p>
+  </div>
+
+  </div><!-- /view-public -->
+
+  <div id="view-club" style="display:none;">
+
+    <div class="club-hero">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <p class="club-hero-eyebrow">St. Mochta's GAA &middot; U14 Boys</p>
+          <h1 class="club-hero-title">Squad &amp; player history</h1>
+        </div>
+        <span style="font-size:10.5px;font-weight:700;color:var(--clay);background:rgba(212,98,42,0.16);padding:5px 10px;border-radius:14px;white-space:nowrap;">CLUB PLUS &middot; SEPARATE SUBSCRIPTION</span>
+      </div>
+      <p class="club-hero-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16v-4M12 8h.01M12 22s8-4.5 8-12V5l-8-3-8 3v5c0 7.5 8 12 8 12z"/></svg>
+        Visible to team management only. Built to flag players who need support to stay involved &mdash; not to rank them against each other.
+      </p>
+    </div>
+
+    <div class="club-grid">
+
+      <div class="roster">
+        <div class="roster-head">Squad &middot; 18 players</div>
+        <div class="roster-item active" onclick="selectPlayer(this)">
+          <div class="roster-avatar">CR</div>
+          <div><div class="roster-name">Conor Reilly</div><div class="roster-sub">Midfield</div></div>
+        </div>
+        <div class="roster-item" onclick="selectPlayer(this)">
+          <div class="roster-avatar">DK</div>
+          <div><div class="roster-name">Dara Kinsella</div><div class="roster-sub">Forward</div></div>
+        </div>
+        <div class="roster-item" onclick="selectPlayer(this)">
+          <div class="roster-avatar">EOC</div>
+          <div><div class="roster-name">Eoin O'Connor</div><div class="roster-sub">Defence</div></div>
+        </div>
+        <div class="roster-item" onclick="selectPlayer(this)">
+          <div class="roster-avatar">RB</div>
+          <div><div class="roster-name">Ruairi Byrne</div><div class="roster-sub">Goalkeeper</div></div>
+        </div>
+      </div>
+
+      <div class="profile-card">
+        <div class="profile-top">
+          <div>
+            <div class="profile-name">Conor Reilly</div>
+            <div class="profile-meta">Midfield &middot; joined U8 (2021) &middot; squad number 11</div>
+          </div>
+          <div class="profile-pill">U14 Boys</div>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat-box"><div class="stat-num">14</div><div class="stat-label">Apps this season</div></div>
+          <div class="stat-box"><div class="stat-num">9</div><div class="stat-label">Points scored</div></div>
+          <div class="stat-box"><div class="stat-num">6</div><div class="stat-label">Assists</div></div>
+          <div class="stat-box"><div class="stat-num">4 yrs</div><div class="stat-label">At the club</div></div>
+        </div>
+
+        <div class="involve-label">Involvement by season &middot; minutes played</div>
+        <div class="sparkline">
+          <div class="spark-bar" style="height:55%"></div>
+          <div class="spark-bar" style="height:70%"></div>
+          <div class="spark-bar" style="height:85%"></div>
+          <div class="spark-bar low" style="height:38%"></div>
+          <div class="spark-bar" style="height:92%"></div>
+        </div>
+
+        <div class="involve-label">Recent matches</div>
+        <div class="match-log">
+          <div class="match-row">
+            <div class="match-date">8 Jun</div>
+            <div><div class="match-opp">vs Skerries Harps (H)</div><div class="match-detail">Grass &middot; Div 2 &middot; scored Q3 &middot; assist by D. Kinsella</div></div>
+            <div class="match-score">W 2-08&ndash;1-06</div>
+          </div>
+          <div class="match-row">
+            <div class="match-date">1 Jun</div>
+            <div><div class="match-opp">vs Lusk Rovers (A)</div><div class="match-detail">Astro &middot; Div 2 &middot; no score</div></div>
+            <div class="match-score">L 1-04&ndash;2-09</div>
+          </div>
+          <div class="match-row">
+            <div class="match-date">25 May</div>
+            <div><div class="match-opp">vs Naomh Maur (H)</div><div class="match-detail">Grass &middot; Div 2 &middot; scored Q1, Q4</div></div>
+            <div class="match-score">W 3-11&ndash;1-05</div>
+          </div>
+        </div>
+
+        <div class="involve-label">Manager's notes &middot; 8 Jun</div>
+        <div class="report-box">
+          "Conor's covering more ground in the middle third than earlier in the season. Good engine, reads the
+          breaking ball well. Worth a look further forward if Dara's out injured next week."
+        </div>
+
+        <div class="locked-card">
+          <div class="locked-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            <span class="locked-title">Coach ratings &amp; trial recommendation</span>
+          </div>
+          <div class="locked-desc">
+            Internal-only rating and "recommend for county trial" flag. Never shown publicly, never visible to
+            other clubs, and not enabled for a player until parental consent is on file.
+          </div>
+          <span class="consent-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.5 0 2.91.37 4.15 1.02"/></svg>
+            Consent on file &middot; Conor Reilly
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </div><!-- /view-club -->
+
+  <footer>League in a box — interactive prototype for product review, not a live product.</footer>
+</div>
+
+
+<script>
+const teams = [
+  {name:"Skerries Harps", p:14,w:10,d:2,l:2,pts:32},
+  {name:"Lusk Rovers", p:14,w:9,d:3,l:2,pts:30},
+  {name:"Balbriggan Town", p:14,w:8,d:2,l:4,pts:26},
+  {name:"Rush Athletic", p:14,w:7,d:3,l:4,pts:24},
+  {name:"Naomh Maur", p:13,w:6,d:2,l:5,pts:20},
+  {name:"Holmpatrick FC", p:14,w:4,d:4,l:6,pts:16},
+  {name:"Loughshinny Utd", p:13,w:3,d:2,l:8,pts:11},
+  {name:"St. Mochta's B", p:14,w:1,d:2,l:11,pts:5}
+];
+
+function initials(name){
+  return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+}
+
+function renderTable(highlightName){
+  const body = document.getElementById('table-body');
+  body.innerHTML = teams.map((t,i)=>{
+    const isHighlight = t.name === highlightName;
+    const qualify = i < 3 ? 'qualify' : '';
+    return '<tr class="'+qualify+(isHighlight?' row-flash':'')+'">'
+      + '<td>'+(i+1)+'</td>'
+      + '<td><span class="crest">'+initials(t.name)+'</span>'+t.name+'</td>'
+      + '<td>'+t.p+'</td><td>'+t.w+'</td><td>'+t.d+'</td><td>'+t.l+'</td>'
+      + '<td>'+t.pts+'</td>'
+      + '</tr>';
+  }).join('');
+}
+renderTable(null);
+
+function submitResult(){
+  const a = parseInt(document.getElementById('score-a').value, 10) || 0;
+  const b = parseInt(document.getElementById('score-b').value, 10) || 0;
+  const lusk = teams.find(t=>t.name==="Lusk Rovers");
+  const balb = teams.find(t=>t.name==="Balbriggan Town");
+  lusk.p++; balb.p++;
+  if(a>b){lusk.w++; lusk.pts+=3; balb.l++;}
+  else if(a<b){balb.w++; balb.pts+=3; lusk.l++;}
+  else {lusk.d++; balb.d++; lusk.pts++; balb.pts++;}
+  teams.sort((x,y)=>y.pts-x.pts);
+
+  document.getElementById('confirm-msg').style.display = 'flex';
+  setTimeout(()=>{
+    renderTable("Lusk Rovers");
+    window.scrollTo({top:0, behavior:'smooth'});
+  }, 600);
+}
+
+function showView(name){
+  const isPublic = name === 'public';
+  document.getElementById('view-public').style.display = isPublic ? 'block' : 'none';
+  document.getElementById('view-club').style.display = isPublic ? 'none' : 'block';
+  document.getElementById('btn-public').classList.toggle('active', isPublic);
+  document.getElementById('btn-club').classList.toggle('active', !isPublic);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function selectPlayer(el){
+  document.querySelectorAll('.roster-item').forEach(r => r.classList.remove('active'));
+  el.classList.add('active');
+  // Prototype note: only Conor Reilly's full profile is wired up.
+  // Clicking other players keeps the same profile to demonstrate the layout.
+}
+</script>
+</body>
+</html>

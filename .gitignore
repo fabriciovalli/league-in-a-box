@@ -1,0 +1,13 @@
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.AppleDouble
+.LSOverride
