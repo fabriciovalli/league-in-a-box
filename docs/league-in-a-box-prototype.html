@@ -415,9 +415,9 @@
   <div class="hero">
     <div class="hero-top">
       <div>
-        <p class="hero-eyebrow">Balbriggan &amp; District League</p>
+        <p class="hero-eyebrow">Fingal Adult Football League</p>
         <h1 class="hero-title">Division 2</h1>
-        <p class="hero-sub">Matchday 14 &middot; updated automatically</p>
+        <p class="hero-sub">Round 14 &middot; updated automatically</p>
       </div>
       <div class="live-pill"><span class="live-dot"></span>LIVE</div>
     </div>
@@ -446,15 +446,21 @@
   <p class="section-desc">A link dropped straight into the team WhatsApp group. No app, no account, no password.</p>
 
   <div class="phone">
-    <div class="phone-meta">Saturday 21 June &middot; St. Mochta's, pitch 2</div>
+    <div class="phone-meta">Saturday 21 June &middot; Round Towers Lusk, pitch 2 &middot; goals&ndash;points</div>
     <div class="fixture-row">
-      <div class="fixture-team">Lusk Rovers</div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <input class="score-input" type="number" id="score-a" min="0" value="2">
+      <div class="fixture-team">Round Towers Lusk</div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <input class="score-input" type="number" id="score-a-g" min="0" value="1" aria-label="Round Towers goals">
         <span class="dash">&ndash;</span>
-        <input class="score-input" type="number" id="score-b" min="0" value="1">
+        <input class="score-input" type="number" id="score-a-p" min="0" value="8" aria-label="Round Towers points">
       </div>
-      <div class="fixture-team">Balbriggan Town</div>
+      <span class="dash" style="margin:0 2px;">v</span>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <input class="score-input" type="number" id="score-b-g" min="0" value="0" aria-label="Garristown goals">
+        <span class="dash">&ndash;</span>
+        <input class="score-input" type="number" id="score-b-p" min="0" value="9" aria-label="Garristown points">
+      </div>
+      <div class="fixture-team">Garristown</div>
     </div>
     <button class="btn-confirm" onclick="submitResult()">Confirm result</button>
     <div class="confirm-msg" id="confirm-msg">
@@ -495,7 +501,7 @@
   <!-- SECTION: pricing -->
   <div class="section-head">
     <span class="section-num">03</span>
-    <span class="section-title">Two products, two buyers</span>
+    <span class="section-title">Two surfaces, two buyers</span>
   </div>
   <p class="section-desc">The league tier is the funnel. The club tier is the business.</p>
 
@@ -634,7 +640,7 @@
           </div>
           <div class="match-row">
             <div class="match-date">1 Jun</div>
-            <div><div class="match-opp">vs Lusk Rovers (A)</div><div class="match-detail">Astro &middot; Div 2 &middot; no score</div></div>
+            <div><div class="match-opp">vs Round Towers Lusk (A)</div><div class="match-detail">Astro &middot; Div 2 &middot; no score</div></div>
             <div class="match-score">L 1-04&ndash;2-09</div>
           </div>
           <div class="match-row">
@@ -674,15 +680,17 @@
 
 
 <script>
+// GAA Adult Football League: standings points are 2 for a win, 1 for a draw, 0 for a loss.
+const WIN_PTS = 2, DRAW_PTS = 1;
 const teams = [
-  {name:"Skerries Harps", p:14,w:10,d:2,l:2,pts:32},
-  {name:"Lusk Rovers", p:14,w:9,d:3,l:2,pts:30},
-  {name:"Balbriggan Town", p:14,w:8,d:2,l:4,pts:26},
-  {name:"Rush Athletic", p:14,w:7,d:3,l:4,pts:24},
-  {name:"Naomh Maur", p:13,w:6,d:2,l:5,pts:20},
-  {name:"Holmpatrick FC", p:14,w:4,d:4,l:6,pts:16},
-  {name:"Loughshinny Utd", p:13,w:3,d:2,l:8,pts:11},
-  {name:"St. Mochta's B", p:14,w:1,d:2,l:11,pts:5}
+  {name:"Skerries Harps", p:14,w:10,d:2,l:2,pts:22},
+  {name:"Naomh Maur", p:14,w:9,d:3,l:2,pts:21},
+  {name:"Fingallians", p:14,w:8,d:2,l:4,pts:18},
+  {name:"Round Towers Lusk", p:14,w:7,d:3,l:4,pts:17},
+  {name:"St. Mochta's", p:13,w:6,d:2,l:5,pts:14},
+  {name:"Garristown", p:14,w:4,d:4,l:6,pts:12},
+  {name:"Rolestown", p:13,w:3,d:2,l:8,pts:8},
+  {name:"Man O'War", p:14,w:1,d:2,l:11,pts:4}
 ];
 
 function initials(name){
@@ -704,20 +712,25 @@ function renderTable(highlightName){
 }
 renderTable(null);
 
+// A GAA score is goals and points; total value = goals*3 + points.
 function submitResult(){
-  const a = parseInt(document.getElementById('score-a').value, 10) || 0;
-  const b = parseInt(document.getElementById('score-b').value, 10) || 0;
-  const lusk = teams.find(t=>t.name==="Lusk Rovers");
-  const balb = teams.find(t=>t.name==="Balbriggan Town");
-  lusk.p++; balb.p++;
-  if(a>b){lusk.w++; lusk.pts+=3; balb.l++;}
-  else if(a<b){balb.w++; balb.pts+=3; lusk.l++;}
-  else {lusk.d++; balb.d++; lusk.pts++; balb.pts++;}
+  const ag = parseInt(document.getElementById('score-a-g').value, 10) || 0;
+  const ap = parseInt(document.getElementById('score-a-p').value, 10) || 0;
+  const bg = parseInt(document.getElementById('score-b-g').value, 10) || 0;
+  const bp = parseInt(document.getElementById('score-b-p').value, 10) || 0;
+  const totalA = ag*3 + ap;
+  const totalB = bg*3 + bp;
+  const towers = teams.find(t=>t.name==="Round Towers Lusk");
+  const garr = teams.find(t=>t.name==="Garristown");
+  towers.p++; garr.p++;
+  if(totalA>totalB){towers.w++; towers.pts+=WIN_PTS; garr.l++;}
+  else if(totalA<totalB){garr.w++; garr.pts+=WIN_PTS; towers.l++;}
+  else {towers.d++; garr.d++; towers.pts+=DRAW_PTS; garr.pts+=DRAW_PTS;}
   teams.sort((x,y)=>y.pts-x.pts);
 
   document.getElementById('confirm-msg').style.display = 'flex';
   setTimeout(()=>{
-    renderTable("Lusk Rovers");
+    renderTable("Round Towers Lusk");
     window.scrollTo({top:0, behavior:'smooth'});
   }, 600);
 }

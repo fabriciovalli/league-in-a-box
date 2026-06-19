@@ -154,12 +154,12 @@
         <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#F7F5F0" stroke-width="2.5"><path d="M12 2v20M2 12h20"/></svg></span>
         LEAGUE IN A BOX
       </div>
-      <p class="cover-eyebrow">Product Requirements Document &middot; v1.0</p>
+      <p class="cover-eyebrow">Product Requirements Document &middot; v1.2</p>
       <h1 class="cover-title">A league table that updates itself, and the club intelligence layer built on top of it</h1>
-      <p class="cover-sub">Two connected products for Irish grassroots sport: a free-to-low-cost tool for league organisers, and a paid player-history platform for club management.</p>
+      <p class="cover-sub">One platform, two surfaces for Irish grassroots sport &mdash; GAA-led: a free-to-low-cost tool for league organisers, and a paid player-history layer for club management.</p>
       <div class="cover-meta">
         <div>Prepared<b>June 2026</b></div>
-        <div>Market<b>Ireland &middot; GAA &amp; soccer</b></div>
+        <div>Market<b>Ireland &middot; GAA-led, soccer to follow</b></div>
         <div>Status<b>Concept &amp; prototype</b></div>
       </div>
     </div>
@@ -184,13 +184,14 @@
   <section id="problem">
     <div class="sec-head"><span class="sec-num">01</span><span class="sec-title">The problem</span></div>
     <p class="lede">Irish grassroots sport runs on volunteers, spreadsheets, and WhatsApp &mdash; and the tools built to fix that have settled around serving the club's membership and payments, not the people running the league itself or the coaches trying to develop players over years.</p>
-    <p>Every week, hundreds of amateur soccer and GAA leagues across Ireland are organised by a volunteer manually maintaining a league table, chasing captains for results over text, and recalculating standings by hand. At the same time, clubs developing young players from U8 through to adult level keep almost no structured record of a player's journey &mdash; appearances, position, involvement, development &mdash; despite this being exactly the information that helps a club retain players and identify who's ready for representative trials.</p>
-    <p>Existing platforms (ClubZap, Pitchero, ClubSpot, LeagueRepublic) are built around club membership, payments, and communications. The league table is a secondary feature, and long-term player development data isn't meaningfully addressed by any of them at the grassroots level.</p>
+    <p>Every week, hundreds of amateur GAA and soccer leagues across Ireland are organised by a volunteer manually maintaining a league table, chasing captains for results over text, and recalculating standings by hand. At the same time, clubs developing young players from U8 through to adult level keep almost no structured record of a player's journey &mdash; appearances, position, involvement, development &mdash; despite this being exactly the information that helps a club retain players and identify who's ready for representative trials.</p>
+    <p><b>We lead with GAA.</b> The grassroots GAA league space is less saturated than soccer, the GAA's county-board structure is a ready-made distribution wedge with no soccer equivalent, and the GAA's goals-and-points scoring is the differentiated feature. The platform stays sport-agnostic and soccer is a fast-follow.</p>
+    <p>Existing platforms (ClubZap, Pitchero, ClubSpot, LeagueRepublic, SportLoMo) are built around club membership, payments, registration, and communications &mdash; and skew toward soccer. The league table is a secondary feature, and long-term player development data isn't meaningfully addressed by any of them at the grassroots level.</p>
   </section>
 
   <section id="products">
-    <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">Two products, two buyers</span></div>
-    <p>This is deliberately structured as two connected products sold to two different people, because they solve different problems and have different willingness to pay.</p>
+    <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">Two surfaces, two buyers</span></div>
+    <p>One platform, two priced surfaces sold to two different people, because they solve different problems and have different willingness to pay. They share one data model &mdash; the link is the team and the match &mdash; so the free surface feeds the paid one.</p>
     <div class="twocol">
       <div class="pillar">
         <div class="pillar-tag">Product 1 &middot; the funnel</div>
@@ -230,8 +231,9 @@
       </table>
     </div>
     <div class="callout">
-      <b>Why penetration matters more than price.</b> Raising the price on a small base barely moves the outcome. Moving from 5% to 15% penetration within a county changes the business entirely. The GAA's own structure &mdash; county boards sitting above individual clubs &mdash; is a natural distribution wedge: one relationship with a county board can open warm introductions to every affiliated club underneath it.
+      <b>Why penetration matters more than price.</b> Raising the price on a small base barely moves the outcome. Moving from 5% to 15% penetration within a county changes the business entirely. The GAA's own structure &mdash; county boards sitting above individual clubs &mdash; is a natural distribution wedge: one relationship with a county board can open warm introductions to every affiliated club underneath it. This GAA-native top-down funnel is a core reason we lead with GAA; soccer has no equivalent.
     </div>
+    <p style="font-size:12px;color:var(--ink-soft);">Note: the &euro;25/mo blended price is a planning placeholder between the Club Intelligence Standard (&euro;19) and Plus (&euro;39) tiers; actual blended ARPU depends on the tier mix.</p>
   </section>
 
   <section id="competitive">
@@ -261,25 +263,27 @@
         </tr>
       </table>
     </div>
-    <p>None of these treat the league organiser as a first-class user, and none offer a coach-facing, multi-season player development view designed around retention rather than ranking.</p>
+    <p>None of these treat the league organiser as a first-class user, and none offer a coach-facing, multi-season player development view designed around retention rather than ranking. The set also skews toward soccer and governing-body registration; grassroots GAA league tooling is comparatively underserved &mdash; which is why we lead there.</p>
   </section>
 
   <section id="league-spec">
     <div class="sec-head"><span class="sec-num">05</span><span class="sec-title">League in a Box &mdash; functional spec</span></div>
-    <h3>Core features</h3>
+    <h3>Core features (Phase 1)</h3>
     <ul>
-      <li>League creation &mdash; divisions, teams, season dates</li>
+      <li>League creation &mdash; divisions, teams, season dates, and a per-league <b>Scoring Format</b>. <b>GAA goals-and-points (e.g. 2-08) with GAA standings points (typically 2/1/0) ship first</b>; single-integer soccer scores with 3/1/0 follow.</li>
       <li>Public league page &mdash; live table, fixtures, results, no login required to view</li>
-      <li>Result submission &mdash; captain opens a direct link (no account) to confirm a score</li>
-      <li>Automatic table recalculation on result confirmation</li>
+      <li>Result submission &mdash; captain opens a single-use, signed <b>Result Link</b> (no account, app, or password) to confirm a score</li>
+      <li>Automatic table recalculation the moment a result is confirmed</li>
+      <li>Trust-based submission with organiser override (organiser can edit any result) for the pilot</li>
       <li>Sponsor banner slot on the public page (organiser can sell locally)</li>
     </ul>
     <h3>Phase 2 additions</h3>
     <ul>
       <li>Automated fixture scheduling across shared pitches</li>
       <li>Referee/umpire assignment</li>
+      <li>Optional opponent-confirmation window and dispute handling</li>
       <li>Multi-season public archive (becomes a long-term SEO and trust asset)</li>
-      <li>GAA scoring format support (goals/points) alongside soccer</li>
+      <li>Soccer fast-follow once the GAA flow is proven</li>
     </ul>
   </section>
 
@@ -297,13 +301,14 @@
       <li>Appearance history &mdash; minutes, position, season-by-season trend</li>
       <li>Scoring and assist record over time</li>
       <li>Manager's notes tied to specific matches</li>
+      <li>A player's-own-journey view, framed as the player's journey rather than a ranking against teammates, and intended to be shareable with the player's guardian</li>
     </ul>
-    <p>This is the layer the prototype currently demonstrates: a roster view, an individual player profile with a season-by-season involvement trend, and a match log. See the accompanying interactive prototype for the working version of this screen.</p>
+    <p>This is the layer the prototype currently demonstrates: a squad roster, an individual player profile with a season-by-season involvement trend, and a match log. See the accompanying interactive prototype for the working version of this screen.</p>
   </section>
 
   <section id="data-risk">
     <div class="sec-head"><span class="sec-num">07</span><span class="sec-title">Data &amp; child-safety approach</span></div>
-    <p class="lede">This is the most important section for any partner evaluating this product. Player development data on minors is high-value and high-risk, and the product is deliberately structured to keep those separate.</p>
+    <p class="lede">This is the most important section for any partner evaluating this product. Player development data on minors is high-value and high-risk, and the product is deliberately structured to keep those separate. The <b>club is the data controller</b> and the <b>platform is the data processor</b>, governed by a data processing agreement.</p>
     <div class="callout warn">
       <b>Context.</b> Ireland's digital age of consent is 16; processing a child's personal data generally requires parental consent below that age, and the Irish Data Protection Commission explicitly flags sports clubs as organisations likely to be accessed by children, triggering extra obligations. The DPC has shown real enforcement appetite against far larger organisations over exactly this category of risk.
     </div>
@@ -326,10 +331,13 @@
       <span class="risk-badge gate">CONSENT-GATED</span>
       <div class="risk-body">
         <h4>Ratings &amp; trial/tournament recommendations</h4>
-        <p>The highest-value feature for club management, and the highest-risk for minors. Internal to the club only, never visible publicly or to other clubs, and not enabled for any player until explicit parental consent is on file. Requires a formal data protection review before broad rollout.</p>
+        <p>The highest-value feature for club management, and the highest-risk for minors. Internal to the club only, never visible publicly or to other clubs, and disabled per player until explicit guardian consent is on file. Requires a formal data protection review before broad rollout.</p>
       </div>
     </div>
     <p>The build sequencing follows this risk order: ship the low-risk tier broadly first, ship the care tier for adult and consenting youth players, and hold the consent-gated tier behind a legal review and a single pilot club before wider release.</p>
+    <div class="callout">
+      <b>Consent model.</b> Per-player, revocable guardian consent (not a single blanket club-registration checkbox) unlocks the consent-gated tier for that player. Ordinary appearance history relies on the club's own lawful basis as controller. Right-to-erasure is honoured; on club churn, data is exported then deleted after a grace period &mdash; specifics to be set by the data-protection review.
+    </div>
   </section>
 
   <section id="pricing">
@@ -351,8 +359,8 @@
     <div class="phase">
       <div class="phase-marker">1</div>
       <div class="phase-body">
-        <h4>Build &amp; pilot League in a Box</h4>
-        <p>Launch with one or two real leagues (likely soccer, given lower data sensitivity). Validate the captain-submission flow and table-sharing behaviour in practice.</p>
+        <h4>Build &amp; pilot League in a Box &mdash; GAA-first</h4>
+        <p>Launch with one or two real GAA leagues, shipping the goals-and-points scoring format from day one. Validate the captain-submission flow and table-sharing behaviour in practice. Soccer follows once the GAA flow is proven.</p>
       </div>
     </div>
     <div class="phase">
@@ -382,7 +390,7 @@
     <div class="sec-head"><span class="sec-num">10</span><span class="sec-title">Open questions for partners</span></div>
     <ul>
       <li>Does a partner have existing relationships with GAA county boards or FAI-affiliated leagues that could shortcut the pilot stage?</li>
-      <li>What's the right legal structure for parental consent capture &mdash; at club registration, or per-feature opt-in?</li>
+      <li>Confirm the legal structure for guardian consent capture in the data-protection review (working decision: per-player, per-feature for the consent-gated tier).</li>
       <li>Should Club Intelligence integrate with existing club registration systems (e.g. Foireann), or remain fully standalone?</li>
       <li>Is there appetite to pilot the consent-gated ratings tier with a single trusted club before broader rollout?</li>
     </ul>
@@ -390,7 +398,7 @@
 
   <footer>
     <span>League in a Box &amp; Club Intelligence &mdash; Product Requirements Document</span>
-    <span>v1.0 &middot; June 2026</span>
+    <span>v1.2 &middot; June 2026</span>
   </footer>
 
 </div>
